@@ -3,8 +3,10 @@ import ReactDom from "react-dom"
 import App from "./App";
 import { createMemoryHistory, createBrowserHistory } from 'history';
 
-const mount = (el, { onNavigate, defaultHistory }) => {
-	const history = defaultHistory || createMemoryHistory();
+const mount = (el, { onNavigate, defaultHistory, initialPath, singedIn }) => {
+	const history = defaultHistory || createMemoryHistory({
+		initialEntries: [initialPath]
+	});
 
 	if(onNavigate){
 		history.listen(onNavigate)
@@ -12,12 +14,13 @@ const mount = (el, { onNavigate, defaultHistory }) => {
 
 	
 	ReactDom.render(
-		<App history={history} />,
+		<App history={history} onSignIn={singedIn} />,
 		el
 	);
 	return {
 		onParentNavigate({pathname: next}) {
 			const {pathname} = history.location;
+			console.log(next);
 
 			if(pathname !== next) {
 				history.push(next);
